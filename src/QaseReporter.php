@@ -80,6 +80,7 @@ class QaseReporter implements QaseReporterInterface
     {
         $key = $this->getTestKey($test);
         $this->testResults[$key]->execution->finish();
+        $this->testResults[$key]->title = $this->beautifyTitle($this->testResults[$key]->title);
 
         $this->reporter->addResult($this->testResults[$key]);
     }
@@ -92,6 +93,21 @@ class QaseReporter implements QaseReporterInterface
     private function createSignature(TestMethod $test): string
     {
         return str_replace("\\", "::", $test->className()) . '::' . $test->methodName() . ':' . $test->line();
+    }
+
+    private function beautifyTitle(string $oldTitle): string
+    {
+        if ($oldTitle !== strtolower($oldTitle)) {
+            $oldTitle = $this->camelCaseToSnakeCase($oldTitle);
+        }
+
+        return str_replace('_', ' ', $oldTitle);
+    }
+
+    private function camelCaseToSnakeCase(string $input): string
+    {
+        $snakeCase = preg_replace_callback('/[A-Z]/', static fn($matches) => '_' . strtolower($matches[0]), $input);
+        return ltrim($snakeCase, '_');
     }
 
     private function getThread(): string
