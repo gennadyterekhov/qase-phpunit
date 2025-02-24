@@ -65,6 +65,10 @@ class QaseReporter implements QaseReporterInterface
     public function updateStatus(TestMethod $test, string $status, ?string $message = null, ?string $stackTrace = null): void
     {
         $key = $this->getTestKey($test);
+        if (!array_key_exists($key, $this->testResults)) {
+            // test did not run
+            return;
+        }
         $this->testResults[$key]->execution->setStatus($status);
 
         if ($message) {
