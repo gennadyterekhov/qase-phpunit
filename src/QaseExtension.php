@@ -22,7 +22,8 @@ final class QaseExtension implements Extension
         $attributeReader = new AttributeReader();
         $attributeParser = new AttributeParser($logger, $attributeReader);
 
-        $reporter = new QaseReporter($attributeParser, $coreReporter);
+        $exceptionHandler = new ExceptionHandler();
+        $reporter = new QaseReporter($attributeParser, $coreReporter, $exceptionHandler);
         
         $facade->registerSubscribers(
             new Events\TestConsideredRiskySubscriber($reporter),
